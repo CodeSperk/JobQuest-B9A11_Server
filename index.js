@@ -12,8 +12,6 @@ app.use(cors({
 }));
 app.use(express.json());
 
-
-
 const uri = `mongodb+srv://${process.env.USER_NAME}:${process.env.USER_PASS}@cluster0.xoayx36.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -28,13 +26,14 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
 
+    const jobsCollection = client.db('jobsDB').collection('jobs');
 
-    const listingCollection = client.db('sample_mflix').collection('comments');
-
-    app.get("/listings", async(req, res) => {
-    const result = await listingCollection.find().toArray();
+    app.get("/jobs", async(req, res) => {
+    const result = await jobsCollection.find().toArray();
      res.send(result);
     })
+
+
 
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
