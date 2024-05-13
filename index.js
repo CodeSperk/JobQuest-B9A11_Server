@@ -25,7 +25,7 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    const jobsCollection = client.db('jobsDB').collection('allJobs');
+    const jobsCollection = client.db('jobsDB').collection('jobs');
 
     app.get("/jobs", async(req, res) => {
     const result = await jobsCollection.find().toArray();
