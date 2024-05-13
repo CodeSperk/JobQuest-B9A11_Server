@@ -1,13 +1,13 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
 const port = process.env.PORT || 5000;
 
 //middlewares
 app.use(cors({
-  origin: ["http://localhost:5173"],
+  origin: ["http://localhost:5173", "https://job-explorer-client.web.app"],
   credentials: true
 }));
 app.use(express.json());
@@ -25,15 +25,21 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-
-    const jobsCollection = client.db('jobsDB').collection('jobs');
+    const jobsCollection = client.db('jobsDB').collection('allJobs');
 
     app.get("/jobs", async(req, res) => {
     const result = await jobsCollection.find().toArray();
      res.send(result);
     })
 
-
+    //To load single job
+    app.get("/job/:id", async(req, res) => {
+      const id = req.params.id;
+      console.log(id);
+      const query = {_id: new ObjectId(id)};
+      const result = await jobsCollection.findOne(query);
+      res.send(result);
+    })
 
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
