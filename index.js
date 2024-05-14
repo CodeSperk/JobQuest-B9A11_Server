@@ -60,6 +60,36 @@ async function run() {
       res.send(result);
     });
 
+    // to update specific job
+    app.put("/jobs/:id", async(req, res) => {
+      const id = req.params.id;
+      const job = req.body;
+      const query = {_id: new ObjectId(id)};
+      const options = {upsert:  true};
+      const updateJob = {
+        $set:{
+          pictureUrl: job.pictureUrl,
+          userName:job.userName,
+          companyLogo: job.companyLogo,
+          jobTitle: job.jobTitle,
+          jobCategory: job.jobCategory,
+          salaryRange:job.salaryRange,
+          jobDescription: job.jobDescription,
+          applicationDeadline: job.applicationDeadline
+        }
+      };
+      const result = await jobsCollection.updateOne(query, updateJob, options);
+      res.send(result);
+    })
+
+    // To delete specific job
+    app.delete("/myJobs/:id", async (req, res) => {
+      const id  = req.params.id;
+      const query = {_id: new ObjectId(id)}
+      const result = await jobsCollection.deleteOne(query);
+      res.send(result);
+    })
+
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
