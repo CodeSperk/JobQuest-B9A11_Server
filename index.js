@@ -112,7 +112,17 @@ async function run() {
       res.send(result);
     });
 
+    // to get applied jobs
 
+    app.get('/appliedJobs', async(req, res) => {
+      const query = {userEmail: req.query.email}
+      const applications = await applicationCollection.find(query).toArray();
+      const applicationIds = applications.map(application => new ObjectId(application.jobId));
+      const jobsQuery = {_id: {$in: applicationIds}}
+      
+      const result = await jobsCollection.find(jobsQuery).toArray();
+      res.send(result);
+    })
 
 
     console.log(
