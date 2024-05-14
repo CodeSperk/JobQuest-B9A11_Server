@@ -28,6 +28,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     const jobsCollection = client.db("jobsDB").collection("jobs");
+    const applicationCollection = client.db("jobsDB").collection("applications");
 
     app.get("/jobs", async (req, res) => {
       const result = await jobsCollection.find().toArray();
@@ -82,6 +83,19 @@ async function run() {
       res.send(result);
     })
 
+    app.put("/allJobs/:id", async(req, res) => {
+      const id = req.params.id;
+      const updatedJob = req.body;
+      const query = {_id: new ObjectId(id)};
+      const updateJob = {
+        $set:{
+          jobApplicants: updatedJob.updatedApplicants 
+        }
+      };
+      const result = await jobsCollection.updateOne(query, updateJob);
+      res.send(result);
+    })
+
     // To delete specific job
     app.delete("/myJobs/:id", async (req, res) => {
       const id  = req.params.id;
@@ -89,6 +103,17 @@ async function run() {
       const result = await jobsCollection.deleteOne(query);
       res.send(result);
     })
+
+    // Manage Applications
+    // post applications
+    app.post("/applications", async (req, res) => {
+      const newApplication = req.body;
+      const result = await applicationCollection.insertOne(newApplication);
+      res.send(result);
+    });
+
+
+
 
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
