@@ -41,6 +41,13 @@ async function run() {
       res.send(result);
     })
 
+    // To post new job
+    app.post("/jobs", async(req, res) => {
+      const newJob = req.body;
+      const result = await jobsCollection.insertOne(newJob);
+      res.send(result);
+    })
+
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
