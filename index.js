@@ -119,7 +119,6 @@ async function run() {
       const applications = await applicationCollection.find(query).toArray();
       const applicationIds = applications.map(application => new ObjectId(application.jobId));
       const jobsQuery = {_id: {$in: applicationIds}}
-      
       const result = await jobsCollection.find(jobsQuery).toArray();
       res.send(result);
     })
